@@ -1,12 +1,14 @@
-This is a tcp client in blender developed through bpy api.
+This is a tcp client/server in blender developed through bpy api.
+It acts as a TCP server to recieve data from LeapClient which send the tracking data from Leap Motion.
+Then it acts as a TCP client and connects to the BlenderHMC server to get the data
 Install Latest Blender for Ubuntu.
 The client has two strings: 
-	1. Query: This tells the server whether to add a device summary or delete a device summary
+	1. Query: This tells the server whether to add a device summary or delete a device summary. 
 	2. String: This tells the device name, attribute, funtion and time of device to be added or deleted.
 
 Run the 'client.blend' file in terminal as follows:
 	open Terminal.
-	Type: blender client.blend
+	Type: blender client
 
 Please make Sure server script is running in another terminal
 After that, run the script in blender by alt+P and see the output in terminal.
