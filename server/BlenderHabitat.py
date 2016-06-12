@@ -9,7 +9,7 @@ from datetime import datetime as dt
 import json
 
 TCP_IP = '127.0.0.1'
-TCP_PORT = 5066
+TCP_PORT = 5069
 BUFFER_SIZE = 10000
 
 
@@ -70,6 +70,8 @@ class Blender():
                 print "Receiving error"
         except:
             print "connection couldn't be established to BlenderLeap Client"
+            self.sock.close()
+            sys.exit()
             pass
         #print self.devName,self.attrname,self.summary_type,self.summ_time
         
@@ -130,6 +132,8 @@ class Blender():
                     self.conn.send(response.encode()) 
                 except:
                     print "could send please check connection"
+                    self.sock.close()
+                    sys.exit()
                     pass
                 print response 
                 threading.Timer(4, self.fetch_data, [devName]).start()

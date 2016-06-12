@@ -5,7 +5,7 @@ import json
 
 
 TCP_IP = '127.0.0.1'
-TCP_PORT = 5065
+TCP_PORT = 5068
 BUFFER_SIZE = 10000
 
 class SampleListener(Leap.Listener):
@@ -45,6 +45,55 @@ class SampleListener(Leap.Listener):
 
     def on_exit(self, controller):
         print ("Exited")
+    def circlegesture(self,gesture,controller):
+        circle=CircleGesture(gesture)
+        if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
+                        clockwiseness = "clockwise"
+        else:
+            clockwiseness = "counterclockwise"
+
+        # Calculate the angle swept since the last frame
+        swept_angle = 0
+        if circle.state != Leap.Gesture.STATE_START:
+            previous_update = CircleGesture(controller.frame(1).gesture(circle.id))
+            swept_angle =  (circle.progress - previous_update.progress) * 2 * Leap.PI
+        #print self.state_names[gesture.state]
+        if(self.state_names[gesture.state]=="STATE_END"):   
+            print "  Circle id: %d, %s, progress: %f, radius: %f, angle: %f degrees, %s" % (
+                gesture.id, self.state_names[gesture.state],
+                circle.progress, circle.radius, swept_angle * Leap.RAD_TO_DEG, clockwiseness)
+            self.senddata(clockwiseness)
+
+    def swipegesture(self,gesture,controller):
+        swipe = SwipeGesture(gesture)
+        if(self.state_names[gesture.state]=="STATE_START"):
+            self.swipe_fingers=0
+        dvec=swipe.direction
+        self.dvec_x=abs(dvec.x)
+        self.dvec_y=abs(dvec.y)
+        self.dvec_z=abs(dvec.z)
+        if(self.dvec_x>self.dvec_y and self.dvec_x>self.dvec_z):
+            if(dvec.x>0):
+                self.swipe_direction="Right"
+            else:
+                self.swipe_direction="Left"
+        if(self.dvec_y>self.dvec_x and self.dvec_y>self.dvec_z):
+            if(dvec.y>0):
+                self.swipe_direction="Up"
+            else:
+                self.swipe_direction="Down"
+        if(self.state_names[gesture.state]=="STATE_END"):
+            points=0
+            for pointalbes in gesture.pointables:
+                points+=1
+            #for points in pointalbes:
+                #print "aaa"
+            self.swipe_fingers+=1
+            #print self.fingers_count
+            #print self.swipe_fingers
+            if(self.swipe_fingers==points):
+                #self.swipe_fingers=0
+                self.senddata(self.swipe_direction)
 
     def on_frame(self, controller):
     	
@@ -64,64 +113,22 @@ class SampleListener(Leap.Listener):
         fingers=frame.fingers.extended()
         for finger in fingers:
             #print (finger_names[finger.type])
-            self.fingers_count=self.fingers_count+1    
+            self.fingers_count=self.fingers_count+1
+            #print finger.id    
         
 
         # Get gestures only with 2 or more fingers
         #print self.fingers_count
-        if(self.fingers_count>=2):
+        if(self.fingers_count>=0):
             for gesture in frame.gestures():
+                #print self.fingers_count
+                #print gesture.id
                 if gesture.type == Leap.Gesture.TYPE_CIRCLE:
-                    circle = CircleGesture(gesture)
-
-                    # Determine clock direction using the angle between the pointable and the circle normal
-                    if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
-                        clockwiseness = "clockwise"
-                    else:
-                        clockwiseness = "counterclockwise"
-
-                    # Calculate the angle swept since the last frame
-                    swept_angle = 0
-                    if circle.state != Leap.Gesture.STATE_START:
-                        previous_update = CircleGesture(controller.frame(1).gesture(circle.id))
-                        swept_angle =  (circle.progress - previous_update.progress) * 2 * Leap.PI
-
-                    #print "  Circle id: %d, %s, progress: %f, radius: %f, angle: %f degrees, %s" % (
-                            #gesture.id, self.state_names[gesture.state],
-                            #circle.progress, circle.radius, swept_angle * Leap.RAD_TO_DEG, clockwiseness)
-
+                    if(self.fingers_count==1):
+                        self.circlegesture(gesture,controller)
                 if gesture.type == Leap.Gesture.TYPE_SWIPE:
-                    swipe = SwipeGesture(gesture)
-                    if(self.state_names[gesture.state]=="STATE_START"):
-                        self.swipe_fingers=0
-                    """
-                    if(self.swipe_flag==1 or self.state_names[gesture.state]=="STATE_START"):
-                    	if(self.state_names[gesture.state]=="STATE_START"):
-                    		self.swipe_flag=1
-                    """
-                    dvec=swipe.direction
-                    self.dvec_x=abs(dvec.x)
-                    self.dvec_y=abs(dvec.y)
-                    self.dvec_z=abs(dvec.z)
-                    if(self.dvec_x>self.dvec_y and self.dvec_x>self.dvec_z):
-                		if(dvec.x>0):
-                			self.swipe_direction="Right"
-                		else:
-                			self.swipe_direction="Left"
-                    if(self.dvec_y>self.dvec_x and self.dvec_y>self.dvec_z):
-                		if(dvec.y>0):
-                			self.swipe_direction="Up"
-                		else:
-                			self.swipe_direction="Down"
-                    if(self.state_names[gesture.state]=="STATE_END"):
-                        points=0
-                        for pointable in gesture.pointables:
-                            points+=1
-                        self.swipe_fingers+=1
-                        #print self.fingers_count
-                        if(self.swipe_fingers==points):
-                		  self.senddata (self.swipe_direction)
-
+                    if(self.fingers_count>2):
+                        self.swipegesture(gesture,controller)
     def senddata(self,str1):
         #print str1
         try:
@@ -129,6 +136,7 @@ class SampleListener(Leap.Listener):
             self.s.send(message.encode())
         except:
             print ("couldn't send")
+            self.s.close()
             pass
     def getnofingers(self,controller):
     	#print "idhar hi me"
@@ -161,6 +169,7 @@ def main():
         pass
     finally:
         # Remove the sample listener when done
+        listener.senddata("end")
         controller.remove_listener(listener)
 
 
