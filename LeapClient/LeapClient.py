@@ -18,7 +18,7 @@ class SampleListener(Leap.Listener):
     dvec_y=0.0
     dvec_z=0.0
     fingers_count=0
-    
+    swipe_fingers=0
     def on_init(self, controller):
         print ("Leap Motion Initialized")
         try:
@@ -92,6 +92,8 @@ class SampleListener(Leap.Listener):
 
                 if gesture.type == Leap.Gesture.TYPE_SWIPE:
                     swipe = SwipeGesture(gesture)
+                    if(self.state_names[gesture.state]=="STATE_START"):
+                        self.swipe_fingers=0
                     """
                     if(self.swipe_flag==1 or self.state_names[gesture.state]=="STATE_START"):
                     	if(self.state_names[gesture.state]=="STATE_START"):
@@ -112,7 +114,13 @@ class SampleListener(Leap.Listener):
                 		else:
                 			self.swipe_direction="Down"
                     if(self.state_names[gesture.state]=="STATE_END"):
-                		self.senddata (self.swipe_direction)
+                        points=0
+                        for pointable in gesture.pointables:
+                            points+=1
+                        self.swipe_fingers+=1
+                        #print self.fingers_count
+                        if(self.swipe_fingers==points):
+                		  self.senddata (self.swipe_direction)
 
     def senddata(self,str1):
         #print str1
