@@ -9,7 +9,7 @@ from datetime import datetime as dt
 import json
 
 TCP_IP = '127.0.0.1'
-TCP_PORT = 5039
+TCP_PORT = 5040
 BUFFER_SIZE = 10000
 
 
@@ -314,5 +314,5 @@ class Blender():
 
 
 if __name__ == "__main__":
-    print"asd"
+    #print"asd"
     myapp = Blender()
