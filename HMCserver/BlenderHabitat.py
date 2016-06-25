@@ -8,6 +8,9 @@ from PyTango import DeviceProxy
 from datetime import datetime as dt
 import json
 
+"""
+Tcp Socket connection IP and Port address. Buffer Size also defined.
+"""
 TCP_IP = '127.0.0.1'
 TCP_PORT = 5040
 BUFFER_SIZE = 10000
@@ -27,12 +30,9 @@ class Blender():
         nodes = self.db.nodes
         self.checkedLeaves = []
         try:
-            #print"yaha"
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.bind((TCP_IP, TCP_PORT))
-            #print "idsd"
             self.sock.listen(1)
-            #print"aaa"
             self.conn, self.addr = self.sock.accept()
             print 'Connection ESTAblished successfully to BlenderLeap Client'
             time.sleep(3)
