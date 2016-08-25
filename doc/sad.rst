@@ -25,11 +25,11 @@ Describes the scope of this requirements specification.
 
 Applicable Documents
 --------------------
-- [1] -- `Leap Motion Controller Installation for Python 3.x`_
+- [1] -- `Leap Motion Controller Installation for Python`_
 - [2] -- `How to Pytango`_
 - [3] -- `PyQt4 Reference Guide`_
 
-.. _`How to use Tango Controls`: https://community.leapmotion.com/t/leap-motion-sdk-with-python-3-5-in-linux-tutorial/5249
+.. _`Leap Motion Controller Installation for Python`: https://community.leapmotion.com/t/leap-motion-sdk-with-python-3-5-in-linux-tutorial/5249
 .. _`How to PyTango`: http://www.tango-controls.org/resources/howto/how-pytango/
 .. _`PyQt4 Reference Guide`: http://pyqt.sourceforge.net/Docs/PyQt4/
 
@@ -70,10 +70,8 @@ Overview
 
 This document will guide you through the requirements of the project.
 
-
 Architectural Requirements 
 ==========================
-
 This section describes the requirements which are important for developing the software architecture.
 
 Non-functional requirements
@@ -103,42 +101,6 @@ Use Case View (functional requirements)
 
 The goal of this project is to build an interactive HUD which receives data from the Habitat Monitoring client as requested from the user and displays the data on the V-ERAS environment.
 
-Use Case: Activate the HUD by swipe up gesture.
-===========================================================
-The user activates the HUD by swiping in the upward direction which is detected by the leap motion controller. 
-
-Actors
-------
-Users running the V-ERAS simulation.
-Leap Motion Controller.
-Blender Game Engine Script
-
-
-Priority
---------
-High
-
-Preconditions
--------------
-Leap Motion Server should be on and running. 
-
-Basic Course
-------------
-#. The User swipes in the upward direction in front of the Leap Motion Controller.
-#. The HUD is displayed on the V-ERAS environment.
-
-
-Alternate Course
-----------------
-<Step-by-step description of the alternate course>
-
-Exception Course
-----------------
-<Step-by-step description of the exception course>
-
-Postconditions
---------------
-<List of postconditions (if apply)>
 
 User Interfaces
 ---------------
@@ -154,3 +116,12 @@ For Setup, It is the Same as Habitat Monitoring Client.
 Install Everything as needed by the Habitat Monitoring Client.
 To run the Server- Type in Terminal:
 python BlenderHabitat.py
+
+
+Performance Requirements
+========================
+
+- CPU with at least 4GB RAM.
+- Discrete Graphics memory card required for Oculus Rift DK2
+- CPU with with 2.5GHZ or more.
+- CPU with minimum of Two USB 3.0 Ports and an HDMI port.
