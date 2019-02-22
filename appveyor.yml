@@ -3,7 +3,7 @@ image:
 
 
 test_script:
-- python Leap.py
+- python src/Python3.5Wrapper/Leap.py
 
 build: off
       
